@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRACAT - Безопасный доступ</title>
+    <title>ASTRACAT - Secure Access Gateway</title>
     
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -34,243 +34,205 @@
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/100530848" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Стили для капчи */
-        #captcha-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(10, 10, 10, 0.98);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(5px);
-            transition: opacity 0.3s ease;
-        }
-
-        .captcha-container {
-            background: rgba(50, 50, 50, 0.8);
-            padding: 3rem;
-            border-radius: 1.5rem;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .captcha-message {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            display: none;
-        }
-
-        .success { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-        .error { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-
-        /* Основные стили */
         :root {
-            --bg-dark: #121212;
-            --bg-light: #212121;
-            --text-dark: #f5f5f5;
-            --text-light: #e0e0e0;
-            --accent: #e84a5f;
-            --error: #ef4444;
-            --glass: rgba(255, 255, 255, 0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #2B6CB0;
+            --primary-hover: #2C5282;
+            --background: #F7FAFC;
+            --surface: #FFFFFF;
+            --border: #E2E8F0;
+            --text-primary: #1A202C;
+            --text-secondary: #4A5568;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+            --blur: blur(20px);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         [data-theme="dark"] {
-            --bg: var(--bg-dark);
-            --text: var(--text-dark);
-            --glass: rgba(255, 255, 255, 0.05);
-        }
-
-        [data-theme="light"] {
-            --bg: var(--bg-light);
-            --text: var(--text-light);
-            --glass: rgba(0, 0, 0, 0.05);
+            --background: #1A202C;
+            --surface: #2D3748;
+            --border: #4A5568;
+            --text-primary: #F7FAFC;
+            --text-secondary: #CBD5E0;
         }
 
         body {
             margin: 0;
-            padding: 5rem 1rem 2rem;
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Roboto', sans-serif;
-            line-height: 1.6;
+            background: var(--background);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
             transition: var(--transition);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 2rem;
         }
 
+        /* Капча */
+        #captcha-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(23, 25, 35, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: var(--blur);
+            z-index: 1000;
+        }
+
+        .captcha-container {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+        }
+
+        /* Шапка */
         .controls {
             position: fixed;
             top: 1rem;
             right: 1rem;
             display: flex;
-            gap: 0.5rem;
-            z-index: 1000;
+            gap: 0.75rem;
+            z-index: 100;
         }
 
         .btn {
-            padding: 0.75rem 1.25rem;
-            border: none;
-            border-radius: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: inherit;
+            padding: 0.625rem 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            backdrop-filter: blur(5px);
+            font-weight: 500;
         }
 
         .btn:hover {
-            background: rgba(231, 74, 95, 0.15);
+            border-color: var(--primary);
             transform: translateY(-1px);
         }
 
+        /* Основной контент */
         .status-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
         .status-indicator {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: var(--accent);
-            animation: pulse 2s infinite;
+            background: #48BB78;
+            box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.2);
         }
 
+        /* Карточки */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin: 2rem 0;
         }
 
         .config-card {
-            background: var(--glass);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             padding: 1.5rem;
-            border-radius: 0.75rem;
-            border-left: 4px solid var(--accent);
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
         }
 
         .config-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
 
         .config-content {
             font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            word-break: break-word;
-            margin: 1rem 0;
-            opacity: 0.9;
+            background: rgba(0, 0, 0, 0.03);
             padding: 1rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 0.5rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow-x: auto;
         }
 
-        .actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
+        /* Модальное окно */
         .qr-modal {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
             display: none;
-            justify-content: center;
             align-items: center;
-            z-index: 2000;
+            justify-content: center;
+            backdrop-filter: var(--blur);
         }
 
         .qr-content {
-            background: var(--glass);
+            background: var(--surface);
             padding: 2rem;
-            border-radius: 1rem;
-            text-align: center;
+            border-radius: var(--radius);
             max-width: 90%;
-            backdrop-filter: blur(10px);
+            text-align: center;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(231, 74, 95, 0.4); }
-            100% { box-shadow: 0 0 0 12px rgba(231, 74, 95, 0); }
-        }
-
-        @media (max-width: 768px) {
-            body { padding-top: 6rem; }
-            .config-card { padding: 1rem; }
-            .btn { padding: 0.5rem 1rem; }
-        }
-
-        /* Стиль плашки с инструкцией */
+        /* Инструкции */
         .instruction-banner {
-            background: rgba(16, 185, 129, 0.1);
-            color: #16b981;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            margin-top: 3rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            font-family: 'Roboto', sans-serif;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 3rem 0;
         }
 
         .instruction-banner h2 {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: bold;
+            margin-top: 0;
+            color: var(--primary);
         }
 
-        .instruction-banner p {
-            margin: 0;
-            font-size: 1rem;
-            line-height: 1.6;
+        pre {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
         }
 
-        .instruction-banner a {
-            color: #16b981;
-            text-decoration: none;
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .config-content {
+                font-size: 0.875rem;
+            }
         }
-
     </style>
-
 </head>
 <body data-theme="dark">
-    <!-- Overlay с капчей -->
+    <!-- Капча -->
     <div id="captcha-overlay">
         <div class="captcha-container">
-            <h1 style="color: #fff; margin-bottom: 2rem;">🔒 Проверка безопасности ASTRACAT</h1>
+            <h1 style="margin: 0 0 2rem 0;">🔒 Security Verification</h1>
             <div class="cf-turnstile" 
                  data-sitekey="0x4AAAAAABLgaFLEZGcqAM3Q"
                  data-callback="onCaptchaSuccess"
                  data-error-callback="onCaptchaError"
                  data-expired-callback="onCaptchaExpired"></div>
-            <div class="captcha-message success" id="success-msg">Проверка пройдена успешно!</div>
-            <div class="captcha-message error" id="error-msg">Ошибка проверки. Обновите страницу</div>
         </div>
     </div>
 
@@ -282,106 +244,113 @@
         </div>
 
         <div class="container">
-            <!-- Инструкция по настройке VPN и прокси в Анимизия VPN -->
-            <div class="instruction-banner">
-                <h2>Как подключить VPN и настроить прокси в Анимизия VPN</h2>
-                <p><strong>1. Как скопировать ключ конфигурации для Анимизия VPN</strong></p>
-                <p>Получите ключ конфигурации (например, для VLESS или VMESS) у своего провайдера или из полученной конфигурации.</p>
-                <p>Убедитесь, что у вас есть ссылка в формате:</p>
-                <pre><code>vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI1</code></pre>
-                <p>Скопируйте эту ссылку в буфер обмена. Для этого просто выделите текст, нажмите правой кнопкой мыши и выберите Копировать или используйте комбинацию клавиш Ctrl + C (Cmd + C для macOS).</p>
-
-                <p><strong>2. Как вставить ключ в приложение Анимизия VPN</strong></p>
-                <p>Откройте приложение Анимизия VPN на своем устройстве.</p>
-                <p>Перейдите в раздел Настройки или Конфигурация (находится в главном меню).</p>
-                <p>Найдите раздел, где можно добавить новый сервер или ключ конфигурации.</p>
-                <p>Например, это может быть вкладка Добавить сервер или Импортировать конфигурацию.</p>
-                <p>Нажмите Вставить или Вставить из буфера обмена. Если такой кнопки нет, выберите поле для ввода ссылки и нажмите правую кнопку мыши, выберите Вставить или используйте Ctrl + V (Cmd + V для macOS).</p>
-                <p>После вставки ссылки нажмите Сохранить.</p>
-                <p>Вы успешно подключили конфигурацию в приложение Анимизия VPN!</p>
-
-                <p><strong>3. Как настроить прокси в условиях интернет-цензуры для работы с VPN</strong></p>
-                <p>Чтобы использовать прокси через приложение Интернет-цензура, выполните следующие действия:</p>
-                <p>Откройте приложение Интернет-цензура на вашем устройстве.</p>
-                <p>Перейдите в раздел Настройки.</p>
-                <p>Найдите пункт Прокси-сервер или Сетевые настройки.</p>
-                <p>Включите опцию Использовать прокси-сервер (если она выключена).</p>
-                <p>Заполните следующие поля:</p>
-                <ul>
-                    <li>Тип прокси: выберите SOCKS5 (или HTTP, если указано в конфигурации).</li>
-                    <li>Адрес прокси: введите IP-адрес вашего прокси-сервера. Например, 85.209.2.112.</li>
-                    <li>Порт: введите порт прокси-сервера. Например, 7777.</li>
-                    <li>Логин: введите логин прокси, если требуется. Например, astranet.</li>
-                    <li>Пароль: введите пароль прокси, если требуется. Например, astranet.</li>
-                </ul>
-                <p>После заполнения всех полей сохраните настройки, нажав Сохранить или Применить.</p>
-                <p>Теперь ваше соединение будет проходить через прокси-сервер, что обеспечит дополнительный уровень конфиденциальности и безопасности.</p>
+            <div class="status-header">
+                <div class="status-indicator"></div>
+                <h1>ASTRACAT Gateway</h1>
             </div>
 
+            <!-- Инструкции -->
+            <div class="instruction-banner">
+                <h2>📖 Руководство по подключению</h2>
+                <p><strong>1. Копирование конфигурации:</strong></p>
+                <pre>vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI1</pre>
+                
+                <p><strong>2. Настройка в приложении:</strong></p>
+                <ul>
+                    <li>Откройте настройки VPN-клиента</li>
+                    <li>Выберите "Импорт конфигурации"</li>
+                    <li>Вставьте скопированную ссылку</li>
+                </ul>
+
+                <p><strong>3. Прокси-настройки:</strong></p>
+                <ul>
+                    <li>Тип: SOCKS5</li>
+                    <li>Адрес: 85.209.2.112</li>
+                    <li>Порт: 7777</li>
+                    <li>Логин/Пароль: astranet</li>
+                </ul>
+            </div>
+
+            <!-- Конфигурации -->
             <section>
-                <h2>🔒 Активные конфигурации</h2>
+                <h2>🔑 Активные конфигурации</h2>
                 <div class="card-grid">
-                    <!-- Конфигурация VLESS 1 -->
-                    <div class="config-card" data-config="vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI1">
-                        <h3>VLESS на TCP (с реальностью)</h3>
-                        <p class="config-content">vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F</p>
-                        <div class="actions">
-                            <button class="btn" onclick="showQRCode('vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F')">Показать QR</button>
+                    <!-- VLESS 1 -->
+                    <div class="config-card">
+                        <h3>VLESS TCP + Reality</h3>
+                        <div class="config-content">
+                            vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F
                         </div>
+                        <button class="btn" onclick="showQRCode('vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F')">
+                            Показать QR
+                        </button>
+                    </div>
+
+                    <!-- VLESS 2 -->
+                    <div class="config-card">
+                        <h3>VLESS WS + TLS</h3>
+                        <div class="config-content">
+                            vless://d342d1e2-12a3-4bcd-ef45-67890hijklmn@server.com:443?path=%2Fpath&security=tls&encryption=none&type=ws#ASTRACAT_WS
+                        </div>
+                        <button class="btn" onclick="showQRCode('vless://d342d1e2-12a3-4bcd-ef45-67890hijklmn@server.com:443?path=%2Fpath&security=tls&encryption=none&type=ws#ASTRACAT_WS')">
+                            Показать QR
+                        </button>
                     </div>
                 </div>
             </section>
         </div>
     </div>
-    
-    <!-- Модал для QR-кода -->
+
+    <!-- QR Модалка -->
     <div id="qr-modal" class="qr-modal">
         <div class="qr-content">
-            <h2>QR код для подключения</h2>
-            <img id="qr-image" src="" alt="QR код" />
-            <button class="btn" onclick="closeQRCode()">Закрыть</button>
+            <h2>🔗 QR для подключения</h2>
+            <img id="qr-image" src="" alt="QR Code">
+            <button class="btn" onclick="closeQRCode()" style="margin-top: 1.5rem;">Закрыть</button>
         </div>
     </div>
 
     <script>
-        // Управление состоянием капчи
+        // Обработка капчи
         function onCaptchaSuccess(token) {
             document.getElementById('captcha-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
         }
 
         function onCaptchaError() {
-            document.getElementById('error-msg').style.display = 'block';
+            alert('Ошибка проверки. Пожалуйста, обновите страницу');
         }
 
         function onCaptchaExpired() {
-            document.getElementById('error-msg').style.display = 'block';
+            alert('Сессия истекла. Пожалуйста, обновите страницу');
         }
 
         // Переключение темы
         document.getElementById('themeToggle').addEventListener('click', function() {
-            let currentTheme = document.body.getAttribute('data-theme');
+            const currentTheme = document.body.getAttribute('data-theme');
             document.body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
         });
 
-        // Показывать QR-код
+        // QR код
         function showQRCode(config) {
             const qrModal = document.getElementById('qr-modal');
             qrModal.style.display = 'flex';
-            document.getElementById('qr-image').src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(config)}&size=250x250`;
+            document.getElementById('qr-image').src = 
+                `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(config)}&size=250x250`;
         }
 
         function closeQRCode() {
             document.getElementById('qr-modal').style.display = 'none';
         }
 
-        // Калькулятор времени
+        // Часы
         function updateClock() {
-            let clock = document.getElementById('clock');
-            let now = new Date();
-            clock.textContent = now.toLocaleTimeString();
+            const now = new Date();
+            document.getElementById('clock').textContent = 
+                `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
         }
         setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
