@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASTRACAT - Secure Access Gateway</title>
+    <title>ASTRACAT - Cyber Security</title>
     
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -35,199 +35,188 @@
     <noscript><div><img src="https://mc.yandex.ru/watch/100530848" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
     <!-- Шрифты -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #2B6CB0;
-            --primary-hover: #2C5282;
-            --background: #F7FAFC;
-            --surface: #FFFFFF;
-            --border: #E2E8F0;
-            --text-primary: #1A202C;
-            --text-secondary: #4A5568;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --radius: 8px;
-            --blur: blur(20px);
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="dark"] {
-            --background: #1A202C;
-            --surface: #2D3748;
-            --border: #4A5568;
-            --text-primary: #F7FAFC;
-            --text-secondary: #CBD5E0;
+            --neon: #ff4655;
+            --cyber-dark: #0a0a12;
+            --cyber-surface: #161620;
+            --cyber-border: #2a2a3a;
+            --glow: 0 0 15px var(--neon);
+            --font-primary: 'Oxanium', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
         }
 
         body {
             margin: 0;
-            background: var(--background);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.5;
-            transition: var(--transition);
+            background: var(--cyber-dark);
+            color: #fff;
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(transparent 90%, rgba(255,70,85,0.1)),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255,255,255,0.05) 0px,
+                    rgba(255,255,255,0.05) 1px,
+                    transparent 1px,
+                    transparent 4px
+                );
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .cyber-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: 2px solid var(--neon);
+            color: var(--neon);
+            font-family: var(--font-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+            margin: 0.5rem;
+        }
+
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--neon), transparent);
+            animation: btn-glitch 3s infinite linear;
+            opacity: 0.3;
+        }
+
+        .cyber-btn:hover {
+            background: rgba(255,70,85,0.1);
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
+        }
+
+        .config-card {
+            background: var(--cyber-surface);
+            border: 2px solid var(--cyber-border);
             padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            transition: 0.3s;
+            max-width: 800px;
+            margin: 2rem auto;
         }
 
-        /* Капча */
+        .config-content {
+            font-family: var(--font-code);
+            background: #000;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 3px solid var(--neon);
+            position: relative;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
         #captcha-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(23, 25, 35, 0.95);
+            background: rgba(10, 10, 10, 0.98);
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: var(--blur);
+            backdrop-filter: blur(20px);
             z-index: 1000;
         }
 
         .captcha-container {
-            background: var(--surface);
-            padding: 2.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 480px;
+            background: var(--cyber-surface);
+            padding: 3rem;
+            border: 2px solid var(--neon);
+            clip-path: polygon(20px 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
             text-align: center;
         }
 
-        /* Шапка */
-        .controls {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            display: flex;
-            gap: 0.75rem;
-            z-index: 100;
+        .instruction-banner {
+            background: var(--cyber-surface);
+            border: 2px solid var(--neon);
+            padding: 2rem;
+            margin: 3rem auto;
+            position: relative;
+            max-width: 800px;
         }
 
-        .btn {
-            padding: 0.625rem 1.25rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
+        .instruction-banner::after {
+            content: '⚠️ ВНИМАНИЕ';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--cyber-dark);
+            padding: 0 1rem;
+            color: var(--neon);
         }
 
-        .btn:hover {
-            border-color: var(--primary);
-            transform: translateY(-1px);
-        }
-
-        /* Основной контент */
-        .status-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 3rem;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #48BB78;
-            box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.2);
-        }
-
-        /* Карточки */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .config-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            transition: var(--transition);
-        }
-
-        .config-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-        }
-
-        .config-content {
-            font-family: 'Courier New', monospace;
-            background: rgba(0, 0, 0, 0.03);
-            padding: 1rem;
-            border-radius: 6px;
-            margin: 1rem 0;
-            overflow-x: auto;
-        }
-
-        /* Модальное окно */
         .qr-modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.9);
             display: none;
-            align-items: center;
             justify-content: center;
-            backdrop-filter: var(--blur);
+            align-items: center;
+            backdrop-filter: blur(20px);
         }
 
         .qr-content {
-            background: var(--surface);
+            background: var(--cyber-surface);
+            border: 2px solid var(--neon);
             padding: 2rem;
-            border-radius: var(--radius);
-            max-width: 90%;
+            position: relative;
+            clip-path: polygon(20px 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
             text-align: center;
         }
 
-        /* Инструкции */
-        .instruction-banner {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            margin: 3rem 0;
+        #clock {
+            min-width: 120px;
+            text-align: center;
         }
 
-        .instruction-banner h2 {
-            margin-top: 0;
-            color: var(--primary);
-        }
-
-        pre {
-            background: rgba(0, 0, 0, 0.05);
-            padding: 1rem;
-            border-radius: 6px;
-            overflow-x: auto;
+        @keyframes btn-glitch {
+            0% { transform: translate(-10%, -10%) rotate(45deg); }
+            100% { transform: translate(110%, 110%) rotate(45deg); }
         }
 
         @media (max-width: 768px) {
-            .container {
+            .config-card, .instruction-banner {
+                margin: 1rem;
                 padding: 1rem;
             }
             
-            .config-content {
-                font-size: 0.875rem;
+            .cyber-btn {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body data-theme="dark">
-    <!-- Капча -->
     <div id="captcha-overlay">
         <div class="captcha-container">
-            <h1 style="margin: 0 0 2rem 0;">🔒 Security Verification</h1>
+            <h1>🔒 ПРОВЕРКА БЕЗОПАСНОСТИ</h1>
             <div class="cf-turnstile" 
                  data-sitekey="0x4AAAAAABLgaFLEZGcqAM3Q"
                  data-callback="onCaptchaSuccess"
@@ -236,114 +225,99 @@
         </div>
     </div>
 
-    <!-- Основной контент -->
     <div id="main-content" style="display: none;">
         <div class="controls">
-            <button class="btn" id="themeToggle">🌓</button>
-            <div class="btn" id="clock"></div>
+            <button class="cyber-btn" id="themeToggle">🌓 СМЕНА ТЕМЫ</button>
+            <div class="cyber-btn" id="clock">00:00:00</div>
+            <button class="cyber-btn" onclick="selectRandomConfig()">НОВЫЙ КОНФИГ</button>
         </div>
 
-        <div class="container">
-            <div class="status-header">
-                <div class="status-indicator"></div>
-                <h1>ASTRACAT Gateway</h1>
+        <div class="instruction-banner">
+            <h2>📡 ИНСТРУКЦИЯ ПО НАСТРОЙКЕ</h2>
+            <p><strong>Настройка прокси:</strong></p>
+            <ul>
+                <li>Тип: SOCKS5</li>
+                <li>Адрес: 85.209.2.112</li>
+                <li>Порт: 7777</li>
+                <li>Логин/Пароль: astranet</li>
+            </ul>
+        </div>
+
+        <div class="config-card">
+            <h3>⚡ АКТИВНЫЙ КОНФИГ</h3>
+            <div class="config-content" id="configOutput"></div>
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button class="cyber-btn" onclick="copyConfig()">КОПИРОВАТЬ</button>
+                <button class="cyber-btn" onclick="showQR()">ПОКАЗАТЬ QR</button>
             </div>
-
-            <!-- Инструкции -->
-            <div class="instruction-banner">
-                <h2>📖 Руководство по подключению</h2>
-                <p><strong>1. Копирование конфигурации:</strong></p>
-                <pre>vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI1</pre>
-                
-                <p><strong>2. Настройка в приложении:</strong></p>
-                <ul>
-                    <li>Откройте настройки VPN-клиента</li>
-                    <li>Выберите "Импорт конфигурации"</li>
-                    <li>Вставьте скопированную ссылку</li>
-                </ul>
-
-                <p><strong>3. Прокси-настройки:</strong></p>
-                <ul>
-                    <li>Тип: SOCKS5</li>
-                    <li>Адрес: 85.209.2.112</li>
-                    <li>Порт: 7777</li>
-                    <li>Логин/Пароль: astranet</li>
-                </ul>
-            </div>
-
-            <!-- Конфигурации -->
-            <section>
-                <h2>🔑 Активные конфигурации</h2>
-                <div class="card-grid">
-                    <!-- VLESS 1 -->
-                    <div class="config-card">
-                        <h3>VLESS TCP + Reality</h3>
-                        <div class="config-content">
-                            vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F
-                        </div>
-                        <button class="btn" onclick="showQRCode('vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F')">
-                            Показать QR
-                        </button>
-                    </div>
-
-                    <!-- VLESS 2 -->
-                    <div class="config-card">
-                        <h3>VLESS WS + TLS</h3>
-                        <div class="config-content">
-                            vless://d342d1e2-12a3-4bcd-ef45-67890hijklmn@server.com:443?path=%2Fpath&security=tls&encryption=none&type=ws#ASTRACAT_WS
-                        </div>
-                        <button class="btn" onclick="showQRCode('vless://d342d1e2-12a3-4bcd-ef45-67890hijklmn@server.com:443?path=%2Fpath&security=tls&encryption=none&type=ws#ASTRACAT_WS')">
-                            Показать QR
-                        </button>
-                    </div>
-                </div>
-            </section>
         </div>
     </div>
 
-    <!-- QR Модалка -->
     <div id="qr-modal" class="qr-modal">
         <div class="qr-content">
-            <h2>🔗 QR для подключения</h2>
-            <img id="qr-image" src="" alt="QR Code">
-            <button class="btn" onclick="closeQRCode()" style="margin-top: 1.5rem;">Закрыть</button>
+            <h2>📲 QR ДЛЯ ПОДКЛЮЧЕНИЯ</h2>
+            <img id="qr-image" src="" alt="QR Code" style="max-width: 250px;">
+            <button class="cyber-btn" onclick="closeQR()" style="margin-top: 1.5rem;">ЗАКРЫТЬ</button>
         </div>
     </div>
 
     <script>
-        // Обработка капчи
-        function onCaptchaSuccess(token) {
+        const configs = [
+            "vless://4f2de5b6-aa42-4f4f-bdab-2858f2092985@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-24oth9tr",
+            "vless://4181b99f-be17-4774-99bb-9427ede998b2@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-u1hp1r1s",
+            "vless://94b1a101-64d4-4b57-a0b8-1675b14a90d6@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-s9ekdvb0astracatui1",
+            "vless://b95a82d6-4b1e-44ef-a564-6612fe247709@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-7qgzxq18astracatui",
+            "vless://73726b38-dde4-4493-9d66-ec78fcbbdf71@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-q5fyms1hastracatui",
+            "vless://4e9090fb-dff4-436a-a5a3-57607659f1f0@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-684dpltyastracatui",
+            "vless://b5bb50c1-b81e-4b80-849a-b0c514a9ed2d@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-owgykxp3astracatui",
+            "vless://01b34936-ce3f-4e83-98ef-9e7401684f01@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-%D1%81%D0%B0%D0%B9%D1%82%20%D1%84%D1%80%D0%B8%D0%B8%202",
+            "vless://2ff5cf68-b926-411b-9955-bbdd92cb77eb@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-00fgq4b4astracatui",
+            "vless://c8a5fadb-e3e5-4aa0-8ca0-b4443c3a3331@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-C%D0%B0%D0%B9%D1%82%20%D0%A4%D1%80%D0%B8%D0%B8"
+        ];
+
+        let currentConfig = '';
+
+        function onCaptchaSuccess() {
             document.getElementById('captcha-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
+            selectRandomConfig();
         }
 
         function onCaptchaError() {
-            alert('Ошибка проверки. Пожалуйста, обновите страницу');
+            alert('ОШИБКА ПРОВЕРКИ! ОБНОВИТЕ СТРАНИЦУ');
         }
 
         function onCaptchaExpired() {
-            alert('Сессия истекла. Пожалуйста, обновите страницу');
+            alert('СЕССИЯ ИСТЕКЛА! ОБНОВИТЕ СТРАНИЦУ');
         }
 
-        // Переключение темы
-        document.getElementById('themeToggle').addEventListener('click', function() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            document.body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
-        });
+        function selectRandomConfig() {
+            currentConfig = configs[Math.floor(Math.random() * configs.length)];
+            document.getElementById('configOutput').textContent = decodeURIComponent(currentConfig);
+        }
 
-        // QR код
-        function showQRCode(config) {
+        function copyConfig() {
+            navigator.clipboard.writeText(currentConfig).then(() => {
+                alert('Конфиг скопирован в буфер!');
+            });
+        }
+
+        function showQR() {
             const qrModal = document.getElementById('qr-modal');
             qrModal.style.display = 'flex';
             document.getElementById('qr-image').src = 
-                `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(config)}&size=250x250`;
+                `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentConfig)}&size=250x250`;
         }
 
-        function closeQRCode() {
+        function closeQR() {
             document.getElementById('qr-modal').style.display = 'none';
         }
 
-        // Часы
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.setAttribute('data-theme', 
+                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').textContent = 
