@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASTRACAT - Безопасный доступ</title>
-
+    
     <!-- Аналитика -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H70JMJMHTT"></script>
     <script>
@@ -33,6 +33,38 @@
     <!-- /Yandex.Metrika counter -->
 
     <style>
+        /* Стили проверки Cloudflare */
+        .cf-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+
+        .cf-container {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(59,130,246,0.3);
+            box-shadow: 0 0 30px rgba(59,130,246,0.1);
+        }
+
+        .cf-title {
+            font-size: 1.8rem;
+            color: #3b82f6;
+            margin-bottom: 1.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Основные стили */
         :root {
             --bg-dark: #0f172a;
             --bg-light: #f8fafc;
@@ -183,23 +215,6 @@
             margin: 1.5rem 0;
         }
 
-        .instruction-card ol {
-            padding-left: 1.5rem;
-        }
-
-        .instruction-card li {
-            margin: 0.75rem 0;
-        }
-
-        .note {
-            opacity: 0.8;
-            font-size: 0.9em;
-            margin-top: 1rem;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            background: rgba(var(--accent), 0.1);
-        }
-
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(var(--accent), 0.4); }
             100% { box-shadow: 0 0 0 12px rgba(var(--accent), 0); }
@@ -214,106 +229,123 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 </head>
+
 <body data-theme="dark">
-    <div class="controls">
-        <button class="btn" id="themeToggle">🌓</button>
-        <div class="btn" id="clock"></div>
-    </div>
-
-    <div class="container">
-        <div class="glass-panel">
-            <h1 style="margin-bottom: 0.5rem;">ASTRACAT Безопасный шлюз</h1>
-            <div class="status-header">
-                <div class="status-indicator"></div>
-                <iframe src="https://astracat-inc.betteruptime.com/badge?theme=dark" 
-                        width="299" height="25" 
-                        style="border:none"></iframe>
-            </div>
-
-            <section>
-                <h2>🔒 Активные конфигурации</h2>
-                <div class="card-grid">
-                    <!-- Конфигурация VLESS 1 -->
-                    <div class="config-card" data-config="vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI%20%D0%A1%D0%B0%D0%B9%D1%82-9asukljl">
-                        <div class="config-content">
-                            vless://935b96ad-f4a4-416f-b16a-bb33e2c26173<br>
-                            @85.209.2.112:10073<br>
-                            ?type=tcp&security=reality<br>
-                            &pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4<br>
-                            &fp=chrome&sni=yahoo.com&sid=c1&spx=%2F<br>
-                            #astracatUI1
-                        </div>
-                        <div class="actions">
-                            <button class="btn copy-btn">📋 Копировать</button>
-                            <button class="btn qr-btn">🖼 QR</button>
-                        </div>
-                    </div>
-
-                    <!-- Конфигурация VLESS 2 -->
-                    <div class="config-card" data-config="vless://d6fd939b-8548-4f3a-9046-d520d855f971@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI%20%D0%A1%D0%B0%D0%B9%D1%82-wiw9o3k8">
-                        <div class="config-content">
-                            vless://d6fd939b-8548-4f3a-9046-d520d855f971<br>
-                            @85.209.2.112:10073<br>
-                            ?type=tcp&security=reality<br>
-                            &pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4<br>
-                            &fp=chrome&sni=yahoo.com&sid=c1&spx=%2F<br>
-                            #astracatUI2
-                        </div>
-                        <div class="actions">
-                            <button class="btn copy-btn">📋 Копировать</button>
-                            <button class="btn qr-btn">🖼 QR</button>
-                        </div>
-                    </div>
-
-                    <!-- Прокси-сервер -->
-                    <div class="config-card" data-config="socks5://astranet:astranet@85.209.2.112:7777">
-                        <div class="config-content">
-                            Тип: SOCKS5<br>
-                            Адрес: 85.209.2.112<br>
-                            Порт: 7777<br>
-                            Логин: astranet<br>
-                            Пароль: astranet
-                        </div>
-                        <div class="actions">
-                            <button class="btn copy-btn">📋 Копировать</button>
-                            <button class="btn qr-btn">🖼 QR</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-                <h2>📚 Инструкции по настройке</h2>
-                
-                <div class="instruction-card">
-                    <h3>Для AmneziaVPN:</h3>
-                    <ol>
-                        <li>Скачайте приложение с официального сайта</li>
-                        <li>Нажмите "+ Добавить конфигурацию"</li>
-                        <li>Выберите "Импорт из буфера обмена"</li>
-                        <li>Используйте кнопку "Копировать" выше</li>
-                        <li>Или отсканируйте QR-код из приложения</li>
-                    </ol>
-                </div>
-
-                <div class="instruction-card">
-                    <h3>Для SmartTube:</h3>
-                    <ol>
-                        <li>Откройте настройки SmartTube</li>
-                        <li>Перейдите в раздел "Обход цензуры"</li>
-                        <li>Выберите "Настроить прокси-сервер"</li>
-                        <li>Введите данные из карточки прокси</li>
-                        <li>Сохраните и перезапустите приложение</li>
-                    </ol>
-                    <div class="note">
-                        💡 Эти же прокси можно использовать в любых других приложениях:
-                        Telegram, браузерах, торрент-клиентах и т.д.
-                    </div>
-                </div>
-            </section>
+    <!-- Cloudflare Verification -->
+    <div class="cf-overlay" id="cfOverlay">
+        <div class="cf-container">
+            <h2 class="cf-title">ASTRACAT Security Gate</h2>
+            <div id="cfWidget" 
+                 data-sitekey="0x4AAAAAABLgaFLEZGcqAM3Q"
+                 data-callback="onVerifySuccess"
+                 data-error-callback="onVerifyError"></div>
+            <p style="color: #94a3b8; margin-top: 1rem;">Пожалуйста, подтвердите что вы человек</p>
         </div>
     </div>
 
+    <!-- Main Content (hidden initially) -->
+    <div id="mainContent" style="display: none;">
+        <div class="controls">
+            <button class="btn" id="themeToggle">🌓</button>
+            <div class="btn" id="clock"></div>
+        </div>
+
+        <div class="container">
+            <div class="glass-panel">
+                <h1 style="margin-bottom: 0.5rem;">ASTRACAT Безопасный шлюз</h1>
+                <div class="status-header">
+                    <div class="status-indicator"></div>
+                    <iframe src="https://astracat-inc.betteruptime.com/badge?theme=dark" 
+                            width="299" height="25" 
+                            style="border:none"></iframe>
+                </div>
+
+                <!-- Конфигурации и инструкции -->
+                <section>
+                    <h2>🔒 Активные конфигурации</h2>
+                    <div class="card-grid">
+                        <!-- VLESS 1 -->
+                        <div class="config-card" data-config="vless://935b96ad-f4a4-416f-b16a-bb33e2c26173@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI%20%D0%A1%D0%B0%D0%B9%D1%82-9asukljl">
+                            <div class="config-content">
+                                vless://935b96ad-f4a4-416f-b16a-bb33e2c26173<br>
+                                @85.209.2.112:10073<br>
+                                ?type=tcp&security=reality<br>
+                                &pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4<br>
+                                &fp=chrome&sni=yahoo.com&sid=c1&spx=%2F<br>
+                                #astracatUI1
+                            </div>
+                            <div class="actions">
+                                <button class="btn copy-btn">📋 Копировать</button>
+                                <button class="btn qr-btn">🖼 QR</button>
+                            </div>
+                        </div>
+
+                        <!-- VLESS 2 -->
+                        <div class="config-card" data-config="vless://d6fd939b-8548-4f3a-9046-d520d855f971@85.209.2.112:10073?type=tcp&security=reality&pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4&fp=chrome&sni=yahoo.com&sid=c1&spx=%2F#astracatUI%20%D0%A1%D0%B0%D0%B9%D1%82-wiw9o3k8">
+                            <div class="config-content">
+                                vless://d6fd939b-8548-4f3a-9046-d520d855f971<br>
+                                @85.209.2.112:10073<br>
+                                ?type=tcp&security=reality<br>
+                                &pbk=svGoQnG9bMEg5GH8Ha4cjJyX8A11MuBNNNuSv5TrSw4<br>
+                                &fp=chrome&sni=yahoo.com&sid=c1&spx=%2F<br>
+                                #astracatUI2
+                            </div>
+                            <div class="actions">
+                                <button class="btn copy-btn">📋 Копировать</button>
+                                <button class="btn qr-btn">🖼 QR</button>
+                            </div>
+                        </div>
+
+                        <!-- Прокси -->
+                        <div class="config-card" data-config="socks5://astranet:astranet@85.209.2.112:7777">
+                            <div class="config-content">
+                                Тип: SOCKS5<br>
+                                Адрес: 85.209.2.112<br>
+                                Порт: 7777<br>
+                                Логин: astranet<br>
+                                Пароль: astranet
+                            </div>
+                            <div class="actions">
+                                <button class="btn copy-btn">📋 Копировать</button>
+                                <button class="btn qr-btn">🖼 QR</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>📚 Инструкции по настройке</h2>
+                    <div class="instruction-card">
+                        <h3>Для AmneziaVPN:</h3>
+                        <ol>
+                            <li>Скачайте приложение с официального сайта</li>
+                            <li>Нажмите "+ Добавить конфигурацию"</li>
+                            <li>Выберите "Импорт из буфера обмена"</li>
+                            <li>Используйте кнопку "Копировать" выше</li>
+                            <li>Или отсканируйте QR-код из приложения</li>
+                        </ol>
+                    </div>
+
+                    <div class="instruction-card">
+                        <h3>Для SmartTube:</h3>
+                        <ol>
+                            <li>Откройте настройки SmartTube</li>
+                            <li>Перейдите в раздел "Обход цензуры"</li>
+                            <li>Выберите "Настроить прокси-сервер"</li>
+                            <li>Введите данные из карточки прокси</li>
+                            <li>Сохраните и перезапустите приложение</li>
+                        </ol>
+                        <div class="note">
+                            💡 Эти же прокси можно использовать в любых других приложениях:
+                            Telegram, браузерах, торрент-клиентах и т.д.
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Modal -->
     <div class="qr-modal" id="qrModal">
         <div class="qr-content">
             <h3 style="margin-bottom: 1rem;">Сканировать конфигурацию</h3>
@@ -323,8 +355,41 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Управление темой
+        // Cloudflare Turnstile
+        function initializeTurnstile() {
+            turnstile.render('#cfWidget', {
+                sitekey: '0x4AAAAAABLgaFLEZGcqAM3Q',
+                theme: 'dark',
+                language: 'ru'
+            });
+        }
+
+        function onVerifySuccess(token) {
+            fetch('/verify', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ token: token })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById('cfOverlay').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    initializeMainContent();
+                } else {
+                    alert('Ошибка проверки! Попробуйте снова.');
+                    turnstile.reset();
+                }
+            });
+        }
+
+        function onVerifyError() {
+            alert('Ошибка загрузки проверки. Обновите страницу.');
+        }
+
+        // Main Content Initialization
+        function initializeMainContent() {
+            // Theme Toggle
             let currentTheme = localStorage.getItem('theme') || 'dark';
             const applyTheme = () => {
                 document.body.setAttribute('data-theme', currentTheme);
@@ -336,7 +401,7 @@
             });
             applyTheme();
 
-            // Часы
+            // Clock
             const updateClock = () => {
                 const options = {
                     timeZone: 'Europe/Moscow',
@@ -350,7 +415,7 @@
             setInterval(updateClock, 1000);
             updateClock();
 
-            // Копирование конфигураций
+            // Copy Functionality
             document.querySelectorAll('.copy-btn').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const config = this.closest('.config-card').dataset.config;
@@ -363,7 +428,7 @@
                 });
             });
 
-            // Генерация QR-кодов
+            // QR Generation
             const generateQR = (config, canvas) => {
                 const isDarkTheme = document.body.getAttribute('data-theme') === 'dark';
                 QRCode.toCanvas(canvas, config, {
@@ -385,12 +450,12 @@
                 });
             });
 
-            // Закрытие модального окна
+            // Close QR Modal
             document.getElementById('closeQR').addEventListener('click', () => {
                 document.getElementById('qrModal').style.display = 'none';
             });
 
-            // Тосты
+            // Toast Notifications
             const showToast = (message, success = true) => {
                 const toast = document.createElement('div');
                 toast.textContent = message;
@@ -406,8 +471,16 @@
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
             }
-        });
+        }
+
+        // Load Turnstile
+        (function() {
+            const script = document.createElement('script');
+            script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+            script.async = true;
+            script.onload = initializeTurnstile;
+            document.head.appendChild(script);
+        })();
     </script>
 </body>
 </html>
-
