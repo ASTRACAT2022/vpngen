@@ -45,7 +45,7 @@
     <form id="captcha-form">
       <div class="turnstile-box">
         <div class="cf-turnstile"
-             data-sitekey="0x4AAAAAABLgVCFQGe-B9Y6Y"
+             data-sitekey="0x4AAAAAABLgaFLEZGcqAM3Q"
              data-callback="captchaPassed">
         </div>
       </div>
@@ -54,10 +54,13 @@
 
   <script>
     function captchaPassed(token) {
-      // Можно дополнительно отправить токен на сервер для проверки, если нужно
-      // А пока просто редирект:
-      window.location.href = "main.html"; // Путь к твоей основной странице
+      // В реальном проекте нужно отправить этот токен на сервер,
+      // где он проверяется через запрос к Cloudflare
+      console.log("Captcha прошла, токен:", token);
+      // Редиректим на главную страницу
+      window.location.href = "main.html";
     }
   </script>
 </body>
 </html>
+
