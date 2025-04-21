@@ -282,55 +282,100 @@
 
         function onCaptchaSuccess(token) {
             console.log('CAPTCHA Success, token:', token);
-            document.getElementById('captcha-overlay').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            selectRandomConfig();
+            try {
+                const captchaOverlay = document.getElementById('captcha-overlay');
+                const mainContent = document.getElementById('main-content');
+
+                if (captchaOverlay && mainContent) {
+                    console.log('Hiding captcha-overlay and showing main-content');
+                    captchaOverlay.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    selectRandomConfig();
+                } else {
+                    console.error('DOM elements not found:', {
+                        captchaOverlay: !!captchaOverlay,
+                        mainContent: !!mainContent
+                    });
+                    alert('Ошибка: не удалось загрузить содержимое. Пожалуйста, обновите страницу.');
+                }
+            } catch (error) {
+                console.error('Error in onCaptchaSuccess:', error);
+                alert('Произошла ошибка при загрузке содержимого. Пожалуйста, обновите страницу.');
+            }
         }
 
-        функция онКапчаОшибка(очибка) {
-            консоль.очибка(Ошибка КАПЧА:, очибка);
-            поповое страновое('ОШИБКА ПРОВЕРКИ! Пожалуйста, обновите страницу и попробуйте нову);
+        function onCaptchaError(error) {
+            console.error('CAPTCHA Error:', error);
+            alert('ОШИБКА ПРОВЕРКИ! Пожалуйста, обновите страницу и попробуйте снова.');
         }
 
-        функция onCaptchaExpired() {
-            консоль.журнал("КАПЧА истек");
-            поповое страновое('СЕССИЯ ИСТЕКЛА! Пожалуйста, обновите страницу);
+        function onCaptchaExpired() {
+            console.log('CAPTCHA Expired');
+            alert('СЕССИЯ ИСТЕКЛА! Пожалуйста, обновите страницу.');
         }
 
-        функция выберитеRandomConfig() {
-            это странанная история = конфигурируэт[Математика.этаж(Математика.случайный() * конфигурируэт.длина)];
-            документ.getElementById('configOutput').текстСодержимое = декодеВРИКОМПОНЕНТ(это странанная история);
+        function selectRandomConfig() {
+            try {
+                const configOutput = document.getElementById('configOutput');
+                if (!configOutput) {
+                    console.error('configOutput element not found');
+                    return;
+                }
+                currentConfig = configs[Math.floor(Math.random() * configs.length)];
+                configOutput.textContent = decodeURIComponent(currentConfig);
+                console.log('Selected config:', currentConfig);
+            } catch (error) {
+                console.error('Error in selectRandomConfig:', error);
+            }
         }
 
-        функция копироват Конинфигурация() {
-            навигатор.буфер обмена.написаттекст(это странанная история).тогда(() => {
-                поповое страновое('Конфиг скопирован в буфере!');
+        function copyConfig() {
+            navigator.clipboard.writeText(currentConfig).then(() => {
+                alert('Конфиг скопирован в буфер!');
+            }).catch(err => {
+                console.error('Error copying config:', err);
+                alert('Ошибка при копировании конфига.');
             });
         }
 
-        функция показацияQR() {
-            конст qrModal = документ.getElementById("кр-модальный");
-            qrModal.стилли.дисплея = 'гибкий';
-            документ.getElementById("кр-изображение").срк = 
-                `https://api.qrserver.com/v1/create-qr-code/?data=${кодировикКомпонт(это странная история)}&size=250x250`;
+        function showQR() {
+            try {
+                const qrModal = document.getElementById('qr-modal');
+                const qrImage = document.getElementById('qr-image');
+                if (qrModal && qrImage) {
+                    qrModal.style.display = 'flex';
+                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentConfig)}&size=250x250`;
+                } else {
+                    console.error('QR modal elements not found');
+                }
+            } catch (error) {
+                console.error('Error in showQR:', error);
+            }
         }
 
-        функция закрактикQR() {
-            документ.getElementById("кр-модальный").стилли.дисплея = 'нет';
+        function closeQR() {
+            const qrModal = document.getElementById('qr-modal');
+            if (qrModal) {
+                qrModal.style.display = 'none';
+            } else {
+                console.error('QR modal not found');
+            }
         }
 
-        документ.getElementById('темаПереключитьcittliсya').добавитСлушатель событый("необычный", () => {
-            документ.тело.setAttribute('тема данных', 
-                документ.тело.getAttribute('тема данных') === 'темный' ? 'свет' : 'темный');
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            console.log('Theme switched to:', newTheme);
         });
 
-        функция обновлённыеЧасы() {
-            конст теперь = новой Дата();
-            документ.getElementById('часы').текстСодержимое = 
-                `${теперь.получить chasys().strokа().padStart(2, '0')}:${теперь.getMinutes().строка().падСтарт(2, '0')}:${теперь.getSeconds().строка().падСтарт(2, '0')}`;
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = 
+                `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
         }
-        наборИнтэрвал(обновлённыеЧасы, 1000);
-        обновлённыеЧасы();
-    </сценари>
-</тело>
-        </html>
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
