@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASTRACAT - Cyber Security</title>
     
+    <!-- Перенаправление через мета-тег только для GitHub Pages -->
+    <script>
+        if (window.location.hostname.includes('github.io')) {
+            document.write('<meta http-equiv="refresh" content="0;url=https://vpngen.vercel.app">');
+        }
+    </script>
+    
+    <!-- Перенаправление через JavaScript только для GitHub Pages -->
+    <script>
+        if (window.location.hostname.includes('github.io')) {
+            window.location.replace('https://vpngen.vercel.app');
+        }
+    </script>
+    
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     
@@ -217,6 +231,13 @@
     </style>
 </head>
 <body data-theme="dark">
+    <!-- Сообщение для GitHub Pages, если редирект не сработал -->
+    <div id="redirect-message" style="display: none; text-align: center; padding: 2rem;">
+        <h1>Перенаправление...</h1>
+        <p>Вы перенаправляетесь на новый сайт. Если это не произошло, <a href="https://vpngen.vercel.app" style="color: #ff4655;">нажмите здесь</a>.</p>
+    </div>
+
+    <!-- Оригинальный контент для Vercel -->
     <div id="captcha-overlay">
         <div class="captcha-container">
             <h1>🔒 ПРОВЕРКА БЕЗОПАСНОСТИ</h1>
@@ -265,6 +286,14 @@
     </div>
 
     <script>
+        // Показать сообщение о редиректе только для GitHub Pages
+        if (window.location.hostname.includes('github.io')) {
+            document.getElementById('redirect-message').style.display = 'block';
+            document.getElementById('captcha-overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('qr-modal').style.display = 'none';
+        }
+
         const configs = [
             "vless://4f2de5b6-aa42-4f4f-bdab-2858f2092985@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-24oth9tr",
             "vless://4181b99f-be17-4774-99bb-9427ede998b2@85.209.2.112:14083?type=tcp&security=none#AstracatGropVPN%20SmartTube-u1hp1r1s",
@@ -285,7 +314,6 @@
             try {
                 const captchaOverlay = document.getElementById('captcha-overlay');
                 const mainContent = document.getElementById('main-content');
-
                 if (captchaOverlay && mainContent) {
                     console.log('Hiding captcha-overlay and showing main-content');
                     captchaOverlay.style.display = 'none';
