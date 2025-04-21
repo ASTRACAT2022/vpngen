@@ -35,7 +35,7 @@
     <noscript><div><img src="https://mc.yandex.ru/watch/100530848" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
     <!-- Vercel Speed Insights -->
-    <script src="https://va.vercel-scripts.com/v1/speed-insights/YOUR_PROJECT_ID"></script>
+    <script src="https://va.vercel-scripts.com/v1/speed-insights/prj_iTrHuT73QqribP3OsrvRhixAal7o"></script>
 
     <!-- Шрифты -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -330,52 +330,52 @@
         }
 
         function copyConfig() {
-            navigator.clipboard.writeText(currentConfig).then(() => {
-                alert('Конфиг скопирован в буфер!');
-            }).catch(err => {
-                console.error('Error copying config:', err);
-                alert('Ошибка при копировании конфига.');
+            навигатор.буфер обмена.написатьТекст(текущийКонфигурация).тогда(() => {
+                оповещение('Конфиг скопирован в буфере!');
+            }).поймать(эрр => {
+                консоль.ошибка("Конфигурация копирования ошибок", эрр);
+                оповещение('Ошибка при копировани конфига');
             });
         }
 
-        function showQR() {
-            try {
-                const qrModal = document.getElementById('qr-modal');
-                const qrImage = document.getElementById('qr-image');
-                if (qrModal && qrImage) {
-                    qrModal.style.display = 'flex';
-                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentConfig)}&size=250x250`;
-                } else {
-                    console.error('QR modal elements not found');
+        функция показатьQR() {
+            попробуй {
+                конст qrModal = документ.getElementById('qr-модальный');
+                конст qrImage = документ.getElementById('qr-изображение');
+                если (qrModal && qrImage) {
+                    qrModal.стиль.дисплей = 'гибкий';
+                    qrImage.срк = `https://api.qrserver.com/v1/create-qr-code/?data=${кодировщикКомпонент(текущийКонфигурация)}&size=250x250`;
+                } другое {
+                    консоль.ошибка("Модальные элементы QR не найдены");
                 }
-            } catch (error) {
-                console.error('Error in showQR:', error);
+            } поймать (ошибка) {
+                консоль.ошибка('Ошибка в showQR:', ошибка);
             }
         }
 
-        function closeQR() {
-            const qrModal = document.getElementById('qr-modal');
-            if (qrModal) {
-                qrModal.style.display = 'none';
-            } else {
-                console.error('QR modal not found');
+        функция закрытьQR() {
+            конст qrModal = документ.getElementById('qr-модальный');
+            если (qrModal) {
+                qrModal.стиль.дисплей = 'нет';
+            } другое {
+                консоль.ошибка("QR-модал не найден");
             }
         }
 
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', newTheme);
-            console.log('Theme switched to:', newTheme);
+        документ.getElementById('темаПереключиться').добавитьСлушатель событий('щелк', () => {
+            конст текущая тема = документ.тело.getAttribute('тема данных');
+            конст новая тема = текущая тема === 'темный' ? 'свет' : 'темный';
+            документ.тело.setAttribute('тема данных', новая тема);
+            консоль.журнал('Тема переключилась на:', новая тема);
         });
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = 
-                `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        функция обновлениеЧасы() {
+            конст теперь = новый Дата();
+            документ.getElementById('часы').текстСодержимое = 
+                `${теперь.получить часы().строка().падСтарт(2, '0')}:${теперь.getMinutes().строка().падСтарт(2, '0')}:${теперь.getSeconds().строка().падСтарт(2, '0')}`;
         }
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
-</body>
-</html>
+        наборИнтервал(обновлениеЧасы, 1000);
+        обновлениеЧасы();
+    </сценарий>
+</тело>
+        </html>
