@@ -5,6 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASTRACAT - Cyber Security</title>
     
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    
+    <!-- Аналитика -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H70JMJMHTT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-H70JMJMHTT');
+    </script>
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+       ym(100530848, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/100530848" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+    <!-- Vercel Speed Insights -->
+    <script src="https://va.vercel-scripts.com/v1/speed-insights/prj_iTrHuT73QqribP3OsrvRhixAal7o"></script>
+
     <!-- Шрифты -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
@@ -185,10 +217,14 @@
     </style>
 </head>
 <body data-theme="dark">
-    <div id="captcha-overlay" style="display: flex;">
+    <div id="captcha-overlay">
         <div class="captcha-container">
             <h1>🔒 ПРОВЕРКА БЕЗОПАСНОСТИ</h1>
-            <button class="cyber-btn" onclick="onCaptchaSuccess('test-token')">ПРОЙТИ ПРОВЕРКУ</button>
+            <div class="cf-turnstile" 
+                 data-sitekey="0x4AAAAAABLgaFLEZGcqAM3Q"
+                 data-callback="onCaptchaSuccess"
+                 data-error-callback="onCaptchaError"
+                 data-expired-callback="onCaptchaExpired"></div>
         </div>
     </div>
 
@@ -222,7 +258,7 @@
 
     <div id="qr-modal" class="qr-modal">
         <div class="qr-content">
-            <h1>📲 QR ДЛЯ ПОДКЛЮЧЕНИЯ</h1>
+            <h2>📲 QR ДЛЯ ПОДКЛЮЧЕНИЯ</h2>
             <img id="qr-image" src="" alt="QR Code" style="max-width: 250px;">
             <button class="cyber-btn" onclick="closeQR()" style="margin-top: 1.5rem;">ЗАКРЫТЬ</button>
         </div>
@@ -245,86 +281,51 @@
         let currentConfig = '';
 
         function onCaptchaSuccess(token) {
-            alert('Функция onCaptchaSuccess вызвана! Токен: ' + token);
-            console.log(`[${new Date().toISOString()}] onCaptchaSuccess called with token:`, token);
-            console.log(`[${new Date().toISOString()}] Document readyState:`, document.readyState);
+            console.log('CAPTCHA Success, token:', token);
+            try {
+                const captchaOverlay = document.getElementById('captcha-overlay');
+                const mainContent = document.getElementById('main-content');
 
-            const attemptTransition = (attempt = 1, maxAttempts = 3) => {
-                console.log(`[${new Date().toISOString()}] Attempt ${attempt}/${maxAttempts} to transition...`);
-                try {
-                    const captchaOverlay = document.getElementById('captcha-overlay');
-                    const mainContent = document.getElementById('main-content');
-
-                    console.log(`[${new Date().toISOString()}] captchaOverlay:`, captchaOverlay);
-                    console.log(`[${new Date().toISOString()}] mainContent:`, mainContent);
-
-                    if (captchaOverlay && mainContent) {
-                        const overlayStyles = window.getComputedStyle(captchaOverlay);
-                        const contentStyles = window.getComputedStyle(mainContent);
-                        console.log(`[${new Date().toISOString()}] captchaOverlay styles: display=${overlayStyles.display}, visibility=${overlayStyles.visibility}, opacity=${overlayStyles.opacity}`);
-                        console.log(`[${new Date().toISOString()}] mainContent styles: display=${contentStyles.display}, visibility=${contentStyles.visibility}, opacity=${contentStyles.opacity}`);
-
-                        captchaOverlay.style.display = 'none !important';
-                        captchaOverlay.style.visibility = 'hidden !important';
-                        captchaOverlay.style.opacity = '0 !important';
-                        mainContent.style.display = 'block !important';
-                        mainContent.style.visibility = 'visible !important';
-                        mainContent.style.opacity = '1 !important';
-
-                        console.log(`[${new Date().toISOString()}] Styles applied. Checking computed styles...`);
-                        const newOverlayStyles = window.getComputedStyle(captchaOverlay);
-                        const newContentStyles = window.getComputedStyle(mainContent);
-                        console.log(`[${new Date().toISOString()}] New captchaOverlay styles: display=${newOverlayStyles.display}, visibility=${newOverlayStyles.visibility}, opacity=${newOverlayStyles.opacity}`);
-                        console.log(`[${new Date().toISOString()}] New mainContent styles: display=${newContentStyles.display}, visibility=${newContentStyles.visibility}, opacity=${newContentStyles.opacity}`);
-
-                        console.log(`[${new Date().toISOString()}] Calling selectRandomConfig...`);
-                        selectRandomConfig();
-                        console.log(`[${new Date().toISOString()}] Transition completed`);
-                        alert('Переход выполнен! Если контент не виден, проверь консоль.');
-                    } else {
-                        console.error(`[${new Date().toISOString()}] Elements not found:`, {
-                            captchaOverlay: !!captchaOverlay,
-                            mainContent: !!mainContent
-                        });
-                        if (attempt < maxAttempts) {
-                            console.log(`[${new Date().toISOString()}] Retrying in 500ms...`);
-                            setTimeout(() => attemptTransition(attempt + 1, maxAttempts), 500);
-                        } else {
-                            alert('Ошибка: элементы страницы не найдены после 3 попыток. Обнови страницу.');
-                        }
-                    }
-                } catch (error) {
-                    console.error(`[${new Date().toISOString()}] Error in onCaptchaSuccess:`, error);
-                    alert('Ошибка в onCaptchaSuccess: ' + error.message);
+                if (captchaOverlay && mainContent) {
+                    console.log('Hiding captcha-overlay and showing main-content');
+                    captchaOverlay.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    selectRandomConfig();
+                } else {
+                    console.error('DOM elements not found:', {
+                        captchaOverlay: !!captchaOverlay,
+                        mainContent: !!mainContent
+                    });
+                    alert('Ошибка: не удалось загрузить содержимое. Пожалуйста, обновите страницу.');
                 }
-            };
-
-            if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                console.log(`[${new Date().toISOString()}] DOM ready, attempting transition...`);
-                attemptTransition();
-            } else {
-                console.log(`[${new Date().toISOString()}] DOM not ready, waiting for DOMContentLoaded...`);
-                document.addEventListener('DOMContentLoaded', () => {
-                    console.log(`[${new Date().toISOString()}] DOMContentLoaded fired`);
-                    attemptTransition();
-                }, { once: true });
+            } catch (error) {
+                console.error('Error in onCaptchaSuccess:', error);
+                alert('Произошла ошибка: ' + error.message);
             }
+        }
+
+        function onCaptchaError(error) {
+            console.error('CAPTCHA Error:', error);
+            alert('ОШИБКА ПРОВЕРКИ! Пожалуйста, обновите страницу и попробуйте снова.');
+        }
+
+        function onCaptchaExpired() {
+            console.log('CAPTCHA Expired');
+            alert('СЕССИЯ ИСТЕКЛА! Пожалуйста, обновите страницу.');
         }
 
         function selectRandomConfig() {
             try {
                 const configOutput = document.getElementById('configOutput');
                 if (!configOutput) {
-                    console.error(`[${new Date().toISOString()}] configOutput not found`);
-                    alert('Ошибка: configOutput не найден');
+                    console.error('configOutput element not found');
                     return;
                 }
                 currentConfig = configs[Math.floor(Math.random() * configs.length)];
                 configOutput.textContent = decodeURIComponent(currentConfig);
-                console.log(`[${new Date().toISOString()}] Selected config:`, currentConfig);
+                console.log('Selected config:', currentConfig);
             } catch (error) {
-                console.error(`[${new Date().toISOString()}] Error in selectRandomConfig:`, error);
-                alert('Ошибка в selectRandomConfig: ' + error.message);
+                console.error('Error in selectRandomConfig:', error);
             }
         }
 
@@ -332,8 +333,8 @@
             navigator.clipboard.writeText(currentConfig).then(() => {
                 alert('Конфиг скопирован в буфер!');
             }).catch(err => {
-                console.error(`[${new Date().toISOString()}] Error copying config:`, err);
-                alert('Ошибка при копировании конфига: ' + err.message);
+                console.error('Error copying config:', err);
+                alert('Ошибка при копировании конфига.');
             });
         }
 
@@ -345,27 +346,19 @@
                     qrModal.style.display = 'flex';
                     qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentConfig)}&size=250x250`;
                 } else {
-                    console.error(`[${new Date().toISOString()}] QR modal elements not found`);
-                    alert('Ошибка: QR modal не найден');
+                    console.error('QR modal elements not found');
                 }
             } catch (error) {
-                console.error(`[${new Date().toISOString()}] Error in showQR:`, error);
-                alert('Ошибка в showQR: ' + error.message);
+                console.error('Error in showQR:', error);
             }
         }
 
         function closeQR() {
-            try {
-                const qrModal = document.getElementById('qr-modal');
-                if (qrModal) {
-                    qrModal.style.display = 'none';
-                } else {
-                    console.error(`[${new Date().toISOString()}] QR modal not found`);
-                    alert('Ошибка: QR modal не найден');
-                }
-            } catch (error) {
-                console.error(`[${new Date().toISOString()}] Error in closeQR:`, error);
-                alert('Ошибка в closeQR: ' + error.message);
+            const qrModal = document.getElementById('qr-modal');
+            if (qrModal) {
+                qrModal.style.display = 'none';
+            } else {
+                console.error('QR modal not found');
             }
         }
 
@@ -373,7 +366,7 @@
             const currentTheme = document.body.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', newTheme);
-            console.log(`[${new Date().toISOString()}] Theme switched to:`, newTheme);
+            console.log('Theme switched to:', newTheme);
         });
 
         function updateClock() {
@@ -383,11 +376,6 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
-
-        window.addEventListener('error', (event) => {
-            console.error(`[${new Date().toISOString()}] Global error:`, event.message, event.filename, event.lineno);
-            alert('Глобальная ошибка: ' + event.message);
-        });
     </script>
 </body>
 </html>
