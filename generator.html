@@ -280,18 +280,21 @@
 
         let currentConfig = '';
 
-        function onCaptchaSuccess() {
+        function onCaptchaSuccess(token) {
+            console.log('CAPTCHA Success, token:', token);
             document.getElementById('captcha-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            выберитеRandomConfig();
+            selectRandomConfig();
         }
 
-        функция онКапчаОшибка() {
-            поповое страновое('ОШИБКА ПРОВЕРКИ! ОБНОВИТЕ СТРАНИЦУ');
+        функция онКапчаОшибка(очибка) {
+            консоль.очибка(Ошибка КАПЧА:, очибка);
+            поповое страновое('ОШИБКА ПРОВЕРКИ! Пожалуйста, обновите страницу и попробуйте нову);
         }
 
         функция onCaptchaExpired() {
-            поповое страновое('СЕССИЯ ИСТЕКЛА! ОБНОВИТЕ СТРАНИЦУ');
+            консоль.журнал("КАПЧА истек");
+            поповое страновое('СЕССИЯ ИСТЕКЛА! Пожалуйста, обновите страницу);
         }
 
         функция выберитеRandomConfig() {
@@ -309,14 +312,14 @@
             конст qrModal = документ.getElementById("кр-модальный");
             qrModal.стилли.дисплея = 'гибкий';
             документ.getElementById("кр-изображение").срк = 
-                `https://api.qrserver.com/v1/create-qr-code/?data=${кодировикКомпонт(это strannanaya istoriya)}&size=250x250`;
+                `https://api.qrserver.com/v1/create-qr-code/?data=${кодировикКомпонт(это странная история)}&size=250x250`;
         }
 
         функция закрактикQR() {
             документ.getElementById("кр-модальный").стилли.дисплея = 'нет';
         }
 
-        документ.getElementById('temаPerecluluzcittliсya').добавитСлушатель событый("необычный", () => {
+        документ.getElementById('темаПереключитьcittliсya').добавитСлушатель событый("необычный", () => {
             документ.тело.setAttribute('тема данных', 
                 документ.тело.getAttribute('тема данных') === 'темный' ? 'свет' : 'темный');
         });
