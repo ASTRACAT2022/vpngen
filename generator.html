@@ -34,6 +34,9 @@
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/100530848" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
+    <!-- Vercel Speed Insights -->
+    <script src="https://va.vercel-scripts.com/v1/speed-insights/YOUR_PROJECT_ID"></script>
+
     <!-- Шрифты -->
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
@@ -280,51 +283,51 @@
         function onCaptchaSuccess() {
             document.getElementById('captcha-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            selectRandomConfig();
+            выберитеRandomConfig();
         }
 
-        function onCaptchaError() {
-            alert('ОШИБКА ПРОВЕРКИ! ОБНОВИТЕ СТРАНИЦУ');
+        функция онКапчаОшибка() {
+            поповое страновое('ОШИБКА ПРОВЕРКИ! ОБНОВИТЕ СТРАНИЦУ');
         }
 
-        function onCaptchaExpired() {
-            alert('СЕССИЯ ИСТЕКЛА! ОБНОВИТЕ СТРАНИЦУ');
+        функция onCaptchaExpired() {
+            поповое страновое('СЕССИЯ ИСТЕКЛА! ОБНОВИТЕ СТРАНИЦУ');
         }
 
-        function selectRandomConfig() {
-            currentConfig = configs[Math.floor(Math.random() * configs.length)];
-            document.getElementById('configOutput').textContent = decodeURIComponent(currentConfig);
+        функция выберитеRandomConfig() {
+            это странанная история = конфигурируэт[Математика.этаж(Математика.случайный() * конфигурируэт.длина)];
+            документ.getElementById('configOutput').текстСодержимое = декодеВРИКОМПОНЕНТ(это странанная история);
         }
 
-        function copyConfig() {
-            navigator.clipboard.writeText(currentConfig).then(() => {
-                alert('Конфиг скопирован в буфер!');
+        функция копироват Конинфигурация() {
+            навигатор.буфер обмена.написаттекст(это странанная история).тогда(() => {
+                поповое страновое('Конфиг скопирован в буфере!');
             });
         }
 
-        function showQR() {
-            const qrModal = document.getElementById('qr-modal');
-            qrModal.style.display = 'flex';
-            document.getElementById('qr-image').src = 
-                `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentConfig)}&size=250x250`;
+        функция показацияQR() {
+            конст qrModal = документ.getElementById("кр-модальный");
+            qrModal.стилли.дисплея = 'гибкий';
+            документ.getElementById("кр-изображение").срк = 
+                `https://api.qrserver.com/v1/create-qr-code/?data=${кодировикКомпонт(это strannanaya istoriya)}&size=250x250`;
         }
 
-        function closeQR() {
-            document.getElementById('qr-modal').style.display = 'none';
+        функция закрактикQR() {
+            документ.getElementById("кр-модальный").стилли.дисплея = 'нет';
         }
 
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            document.body.setAttribute('data-theme', 
-                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        документ.getElementById('temаPerecluluzcittliсya').добавитСлушатель событый("необычный", () => {
+            документ.тело.setAttribute('тема данных', 
+                документ.тело.getAttribute('тема данных') === 'темный' ? 'свет' : 'темный');
         });
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = 
-                `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        функция обновлённыеЧасы() {
+            конст теперь = новой Дата();
+            документ.getElementById('часы').текстСодержимое = 
+                `${теперь.получить chasys().strokа().padStart(2, '0')}:${теперь.getMinutes().строка().падСтарт(2, '0')}:${теперь.getSeconds().строка().падСтарт(2, '0')}`;
         }
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
-</body>
-</html>
+        наборИнтэрвал(обновлённыеЧасы, 1000);
+        обновлённыеЧасы();
+    </сценари>
+</тело>
+        </html>
