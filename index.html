@@ -281,27 +281,35 @@
         let currentConfig = '';
 
         function onCaptchaSuccess(token) {
-            console.log('CAPTCHA Success, token:', token);
-            try {
-                const captchaOverlay = document.getElementById('captcha-overlay');
-                const mainContent = document.getElementById('main-content');
+            console.log('CAPTCHA Success called with token:', token);
+            setTimeout(() => {
+                try {
+                    console.log('Attempting to find DOM elements...');
+                    const captchaOverlay = document.getElementById('captcha-overlay');
+                    const mainContent = document.getElementById('main-content');
 
-                if (captchaOverlay && mainContent) {
-                    console.log('Hiding captcha-overlay and showing main-content');
-                    captchaOverlay.style.display = 'none';
-                    mainContent.style.display = 'block';
-                    selectRandomConfig();
-                } else {
-                    console.error('DOM elements not found:', {
-                        captchaOverlay: !!captchaOverlay,
-                        mainContent: !!mainContent
-                    });
-                    alert('Ошибка: не удалось загрузить содержимое. Пожалуйста, обновите страницу.');
+                    console.log('captchaOverlay found:', !!captchaOverlay);
+                    console.log('mainContent found:', !!mainContent);
+
+                    if (captchaOverlay && mainContent) {
+                        console.log('Setting display properties...');
+                        captchaOverlay.style.display = 'none !important';
+                        mainContent.style.display = 'block !important';
+                        console.log('Display properties set. Calling selectRandomConfig...');
+                        selectRandomConfig();
+                        console.log('selectRandomConfig called successfully');
+                    } else {
+                        console.error('DOM elements not found:', {
+                            captchaOverlay: !!captchaOverlay,
+                            mainContent: !!mainContent
+                        });
+                        alert('Ошибка: не удалось найти элементы страницы. Пожалуйста, обновите страницу.');
+                    }
+                } catch (error) {
+                    console.error('Error in onCaptchaSuccess:', error);
+                    alert('Произошла ошибка при переходе к содержимому. Пожалуйста, обновите страницу.');
                 }
-            } catch (error) {
-                console.error('Error in onCaptchaSuccess:', error);
-                alert('Произошла ошибка при загрузке содержимого. Пожалуйста, обновите страницу.');
-            }
+            }, 100); // Slight delay to ensure DOM readiness
         }
 
         function onCaptchaError(error) {
@@ -330,52 +338,52 @@
         }
 
         function copyConfig() {
-            навигатор.буфер обмена.написатьТекст(текущийКонфигурация).тогда(() => {
-                оповещение('Конфиг скопирован в буфере!');
-            }).поймать(эрр => {
-                консоль.ошибка("Конфигурация копирования ошибок", эрр);
-                оповещение('Ошибка при копировани конфига');
+            navigator.clipboard.writeText(currentConfig).then(() => {
+                alert('Конфиг скопирован в буфер!');
+            }).catch(err => {
+                console.error('Error copying config:', err);
+                alert('Ошибка при копировании конфига.');
             });
         }
 
-        функция показатьQR() {
-            попробуй {
-                конст qrModal = документ.getElementById('qr-модальный');
-                конст qrImage = документ.getElementById('qr-изображение');
-                если (qrModal && qrImage) {
-                    qrModal.стиль.дисплей = 'гибкий';
-                    qrImage.срк = `https://api.qrserver.com/v1/create-qr-code/?data=${кодировщикКомпонент(текущийКонфигурация)}&size=250x250`;
-                } другое {
-                    консоль.ошибка("Модальные элементы QR не найдены");
+        function showQR() {
+            try {
+                const qrModal = document.getElementById('qr-modal');
+                const qrImage = document.getElementById('qr-image');
+                if (qrModal && qrImage) {
+                    qrModal.style.display = 'flex';
+                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentConfig)}&size=250x250`;
+                } else {
+                    console.error('QR modal elements not found');
                 }
-            } поймать (ошибка) {
-                консоль.ошибка('Ошибка в showQR:', ошибка);
+            } catch (error) {
+                console.error('Error in showQR:', error);
             }
         }
 
-        функция закрытьQR() {
-            конст qrModal = документ.getElementById('qr-модальный');
-            если (qrModal) {
-                qrModal.стиль.дисплей = 'нет';
-            } другое {
-                консоль.ошибка("QR-модал не найден");
+        function closeQR() {
+            const qrModal = document.getElementById('qr-modal');
+            if (qrModal) {
+                qrModal.style.display = 'none';
+            } else {
+                console.error('QR modal not found');
             }
         }
 
-        документ.getElementById('темаПереключиться').добавитьСлушатель событий('щелк', () => {
-            конст текущая тема = документ.тело.getAttribute('тема данных');
-            конст новая тема = текущая тема === 'темный' ? 'свет' : 'темный';
-            документ.тело.setAttribute('тема данных', новая тема);
-            консоль.журнал('Тема переключилась на:', новая тема);
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            console.log('Theme switched to:', newTheme);
         });
 
-        функция обновлениеЧасы() {
-            конст теперь = новый Дата();
-            документ.getElementById('часы').текстСодержимое = 
-                `${теперь.получить часы().строка().падСтарт(2, '0')}:${теперь.getMinutes().строка().падСтарт(2, '0')}:${теперь.getSeconds().строка().падСтарт(2, '0')}`;
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = 
+                `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
         }
-        наборИнтервал(обновлениеЧасы, 1000);
-        обновлениеЧасы();
-    </сценарий>
-</тело>
-        </html>
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
